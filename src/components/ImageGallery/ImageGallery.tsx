@@ -8,12 +8,12 @@ import type { Image } from './types';
 const images: Image[] = [
   {
     id: 1,
-    url: "/images/WhatsApp Image 2025-03-30 at 21.08.38 (1).jpeg",
+    url: "/images/property-image-01.jpeg",
     alt: "Property Image 1"
   },
   {
     id: 2,
-    url: "/images/WhatsApp Image 2025-03-30 at 21.08.38.jpeg",
+    url: "/images/property-image-02.jpeg",
     alt: "Property Image 2"
   },
   {
