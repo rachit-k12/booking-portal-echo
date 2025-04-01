@@ -108,14 +108,6 @@ const DatePicker = () => {
             backgroundColor: '#F7F7F7'
           }
         }}
-        styles={{
-          day_today: { fontWeight: 'normal' },
-          day_selected: { 
-            backgroundColor: 'black', 
-            color: 'white',
-            fontWeight: 'bold' 
-          }
-        }}
       />
     </div>
   );
