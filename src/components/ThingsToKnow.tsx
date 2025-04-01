@@ -1,146 +1,255 @@
-
-import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Clock,
+  Users,
+  ChevronRight,
+  X,
+  Camera,
+  BellOff,
+  AlertTriangle,
+  Trash2,
+  Key,
+  Lock,
+} from "lucide-react";
 
 const ThingsToKnow = () => {
-  const [showRulesDialog, setShowRulesDialog] = useState(false);
+  const [showHouseRulesDialog, setShowHouseRulesDialog] = useState(false);
   const [showSafetyDialog, setShowSafetyDialog] = useState(false);
-  
+
+  const houseRules = {
+    intro: "You'll be staying in someone's home, so please treat it with care and respect.",
+    checkingInOut: [
+      {
+        rule: "Check-in after 12:00 pm",
+        icon: <Clock className="w-5 h-5" />,
+      },
+      {
+        rule: "Checkout before 11:00 am",
+        icon: <Clock className="w-5 h-5" />,
+      },
+    ],
+    duringStay: [
+      {
+        rule: "10 guests maximum",
+        icon: <Users className="w-5 h-5" />,
+      },
+      {
+        rule: "No parties or events",
+        icon: <BellOff className="w-5 h-5" />,
+      },
+      {
+        rule: "No smoking",
+        icon: <AlertTriangle className="w-5 h-5" />,
+      },
+      {
+        rule: "No pets",
+        icon: <AlertTriangle className="w-5 h-5" />,
+      },
+    ],
+    beforeLeave: [
+      {
+        rule: "Throw rubbish away",
+        icon: <Trash2 className="w-5 h-5" />,
+      },
+      {
+        rule: "Return keys",
+        icon: <Key className="w-5 h-5" />,
+      },
+      {
+        rule: "Lock up",
+        icon: <Lock className="w-5 h-5" />,
+      },
+    ],
+  };
+
+  const safetyItems = [
+    {
+      item: "Carbon monoxide alarm not reported",
+      icon: <AlertTriangle className="w-5 h-5" />,
+      description: "The host hasn't reported a carbon monoxide alarm on the property. We suggest bringing a portable detector for your stay.",
+    },
+    {
+      item: "Smoke alarm not reported",
+      icon: <AlertTriangle className="w-5 h-5" />,
+      description: "The host hasn't reported a smoke alarm on the property. We suggest bringing a portable detector for your stay.",
+    },
+    {
+      item: "Exterior security cameras on property",
+      icon: <Camera className="w-5 h-5" />,
+      description: "Security cameras are installed on the exterior of the property for your safety.",
+    },
+  ];
+
+  // Preview rules for the main view
+  const previewRules = [
+    {
+      rule: "Check-in after 12:00 pm",
+      icon: <Clock className="w-5 h-5" />,
+    },
+    {
+      rule: "Checkout before 11:00 am",
+      icon: <Clock className="w-5 h-5" />,
+    },
+    {
+      rule: "10 guests maximum",
+      icon: <Users className="w-5 h-5" />,
+    },
+  ];
+
   return (
-    <div className="py-8">
-      <h2 className="text-2xl font-semibold mb-6">Things to know</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* House Rules */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">House rules</h3>
-          <ul className="space-y-3">
-            <li>Check-in after 12:00pm</li>
-            <li>Checkout before 11:00am</li>
-            <li>10 guests maximum</li>
-          </ul>
-          <button 
-            onClick={() => setShowRulesDialog(true)}
-            className="flex items-center mt-4 font-medium text-gray-800 underline"
+    <div className="max-w-[1120px] mx-auto py-12">
+      <h2 className="text-2xl font-semibold mb-8">Things to know</h2>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* House Rules Section */}
+        <div className="space-y-8">
+          <h3 className="text-xl font-medium">House rules</h3>
+          <div className="space-y-4">
+            {previewRules.map((rule, index) => (
+              <div key={index} className="flex items-center gap-3 text-gray-600">
+                {rule.icon}
+                <span>{rule.rule}</span>
+              </div>
+            ))}
+          </div>
+          <Button
+            variant="link"
+            className="p-0 h-auto text-gray-800 font-medium hover:text-gray-600 flex items-center gap-2"
+            onClick={() => setShowHouseRulesDialog(true)}
           >
-            Show more <ChevronRight className="h-4 w-4 ml-1" />
-          </button>
+            Show more
+            <ChevronRight className="w-4 h-4" />
+          </Button>
         </div>
-        
-        {/* Safety & Property */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">Safety & property</h3>
-          <ul className="space-y-3">
-            <li>Carbon monoxide alarm not reported</li>
-            <li>Smoke alarm not reported</li>
-            <li>Exterior security cameras on property</li>
-          </ul>
-          <button 
+
+        {/* Safety Section */}
+        <div className="space-y-8">
+          <h3 className="text-xl font-medium">Safety & property</h3>
+          <div className="space-y-4">
+            {safetyItems.slice(0, 3).map((item, index) => (
+              <div key={index} className="flex items-center gap-3 text-gray-600">
+                {item.icon}
+                <span>{item.item}</span>
+              </div>
+            ))}
+          </div>
+          <Button
+            variant="link"
+            className="p-0 h-auto text-gray-800 font-medium hover:text-gray-600 flex items-center gap-2"
             onClick={() => setShowSafetyDialog(true)}
-            className="flex items-center mt-4 font-medium text-gray-800 underline"
           >
-            Show more <ChevronRight className="h-4 w-4 ml-1" />
-          </button>
-        </div>
-        
-        {/* Cancellation Policy */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">Cancellation policy</h3>
-          <p className="mb-3">Add your trip dates to get the cancellation details for this stay.</p>
-          <Button variant="outline" className="text-black border-black mt-2 flex items-center">
-            Add dates <ChevronRight className="h-4 w-4 ml-1" />
+            Show more
+            <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
       </div>
-      
+
       {/* House Rules Dialog */}
-      <Dialog open={showRulesDialog} onOpenChange={setShowRulesDialog}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl">House rules</DialogTitle>
-          </DialogHeader>
-          
-          <div className="mt-4 space-y-6">
-            <p className="text-gray-700">
-              Please remember that you're staying in someone's home and treat it with the same respect you would your own.
-            </p>
-            
-            <div>
-              <h4 className="font-semibold mb-2">Check-in/out times</h4>
-              <ul className="space-y-2">
-                <li>Check-in after 12:00pm</li>
-                <li>Checkout before 11:00am</li>
-              </ul>
-            </div>
-            
-            <Separator />
-            
-            <div>
-              <h4 className="font-semibold mb-2">House rules</h4>
-              <ul className="space-y-2">
-                <li>10 guests maximum</li>
-                <li>Pets allowed</li>
-                <li>No parties or events</li>
-                <li>No smoking inside the property</li>
-                <li>Quiet hours between 10:00pm - 7:00am</li>
-              </ul>
-            </div>
-            
-            <Separator />
-            
-            <div>
-              <h4 className="font-semibold mb-2">Additional rules</h4>
-              <ul className="space-y-2">
-                <li>Please conserve energy by turning off lights and AC when not in use</li>
-                <li>Dispose of garbage in designated bins</li>
-                <li>Report any damages immediately</li>
-              </ul>
+      <Dialog open={showHouseRulesDialog} onOpenChange={setShowHouseRulesDialog}>
+        <DialogContent className="max-w-2xl !p-0 !rounded-xl overflow-hidden">
+          <div className="bg-white">
+            <DialogHeader className="p-6 pb-0">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-2xl font-semibold">
+                  House rules
+                </DialogTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-gray-100 -mr-2"
+                  onClick={() => setShowHouseRulesDialog(false)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            </DialogHeader>
+
+            <div className="p-6 space-y-8">
+              {/* Introduction */}
+              <p className="text-gray-600">{houseRules.intro}</p>
+
+              {/* Checking in and out */}
+              <div className="space-y-6">
+                <h4 className="text-xl font-semibold">Checking in and out</h4>
+                <div className="space-y-6">
+                  {houseRules.checkingInOut.map((rule, index) => (
+                    <div key={index} className="flex items-center gap-4 text-gray-600">
+                      {rule.icon}
+                      <span>{rule.rule}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* During your stay */}
+              <div className="space-y-6">
+                <h4 className="text-xl font-semibold">During your stay</h4>
+                <div className="space-y-6">
+                  {houseRules.duringStay.map((rule, index) => (
+                    <div key={index} className="flex items-center gap-4 text-gray-600">
+                      {rule.icon}
+                      <span>{rule.rule}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Before you leave */}
+              <div className="space-y-6">
+                <h4 className="text-xl font-semibold">Before you leave</h4>
+                <div className="space-y-6">
+                  {houseRules.beforeLeave.map((rule, index) => (
+                    <div key={index} className="flex items-center gap-4 text-gray-600">
+                      {rule.icon}
+                      <span>{rule.rule}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-      
+
       {/* Safety Dialog */}
       <Dialog open={showSafetyDialog} onOpenChange={setShowSafetyDialog}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl">Safety & property</DialogTitle>
-          </DialogHeader>
-          
-          <div className="mt-4 space-y-6">
-            <div>
-              <h4 className="font-semibold mb-2">Safety devices</h4>
-              <ul className="space-y-2">
-                <li>Carbon monoxide alarm not reported</li>
-                <li>Smoke alarm not reported</li>
-                <li>First aid kit available</li>
-              </ul>
-            </div>
-            
-            <Separator />
-            
-            <div>
-              <h4 className="font-semibold mb-2">Property features</h4>
-              <ul className="space-y-2">
-                <li>Exterior security cameras on property</li>
-                <li>Gated community with 24/7 security</li>
-                <li>Emergency exit route available</li>
-                <li>Fire extinguisher in the kitchen</li>
-              </ul>
-            </div>
-            
-            <Separator />
-            
-            <div>
-              <h4 className="font-semibold mb-2">Potential hazards</h4>
-              <ul className="space-y-2">
-                <li>Swimming pool without a gate or fence</li>
-                <li>Nearby lake, river, other body of water</li>
-                <li>Climb stairs to access the property</li>
-              </ul>
+        <DialogContent className="max-w-2xl !p-0 !rounded-xl overflow-hidden">
+          <div className="bg-white">
+            <DialogHeader className="p-6 pb-0">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-2xl font-semibold">
+                  Safety & property
+                </DialogTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-gray-100 -mr-2"
+                  onClick={() => setShowSafetyDialog(false)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            </DialogHeader>
+
+            <div className="p-6 space-y-8">
+              {safetyItems.map((item, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1">{item.icon}</div>
+                    <div className="space-y-2">
+                      <h4 className="font-medium">{item.item}</h4>
+                      <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </DialogContent>
