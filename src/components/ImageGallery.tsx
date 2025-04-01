@@ -1,8 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ChevronLeft, ChevronRight, X, Share, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious 
+} from '@/components/ui/carousel';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Image {
   id: number;
@@ -42,6 +50,38 @@ const images: Image[] = [
 const ImageGallery: React.FC = () => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(Array(images.length).fill(false));
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    // Preload images
+    const imagePromises = images.map((image, index) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = image.url;
+        img.onload = () => {
+          setImagesLoaded(prev => {
+            const newState = [...prev];
+            newState[index] = true;
+            return newState;
+          });
+          resolve();
+        };
+        img.onerror = () => {
+          setImagesLoaded(prev => {
+            const newState = [...prev];
+            newState[index] = true; // Mark as loaded even on error to avoid infinite loading
+            return newState;
+          });
+          resolve();
+        };
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      setAllImagesLoaded(true);
+    });
+  }, []);
 
   const nextPhoto = () => {
     setCurrentPhotoIndex((prevIndex) => 
@@ -55,25 +95,54 @@ const ImageGallery: React.FC = () => {
     );
   };
 
+  const handleImageError = (index: number) => {
+    console.error(`Failed to load image at index ${index}`);
+  };
+
+  const renderImageOrFallback = (image: Image, index: number, className: string) => {
+    if (!imagesLoaded[index]) {
+      return <Skeleton className={`${className} animate-pulse`} />;
+    }
+    
+    return (
+      <img 
+        src={image.url} 
+        alt={image.alt}
+        className={className}
+        onError={() => handleImageError(index)}
+      />
+    );
+  };
+
   return (
     <>
       <div className="relative">
         {/* Gallery Grid for desktop */}
         <div className="hidden md:grid grid-cols-4 gap-2 rounded-xl overflow-hidden">
-          <div className="col-span-2 row-span-2">
-            <img 
-              src={images[0].url} 
-              alt={images[0].alt}
-              className="h-full w-full object-cover cursor-pointer" 
-              onClick={() => setShowAllPhotos(true)}
+          <div className="col-span-2 row-span-2 transition-transform hover:scale-[1.01] duration-300">
+            {renderImageOrFallback(images[0], 0, "h-full w-full object-cover cursor-pointer transition-opacity duration-500")}
+            {!imagesLoaded[0] && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Skeleton className="h-full w-full rounded-xl" />
+              </div>
+            )}
+            <div 
+              className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all duration-300 cursor-pointer"
+              onClick={() => {
+                setCurrentPhotoIndex(0);
+                setShowAllPhotos(true);
+              }}
             />
           </div>
+          
           {images.slice(1, 5).map((image, index) => (
-            <div key={image.id} className={index === 3 ? "relative" : ""}>
-              <img 
-                src={image.url} 
-                alt={image.alt}
-                className="h-full w-full object-cover cursor-pointer" 
+            <div key={image.id} className="relative overflow-hidden transition-transform hover:scale-[1.01] duration-300">
+              {renderImageOrFallback(image, index + 1, "h-full w-full object-cover cursor-pointer transition-opacity duration-500")}
+              {!imagesLoaded[index + 1] && (
+                <Skeleton className="h-full w-full absolute inset-0" />
+              )}
+              <div 
+                className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   setCurrentPhotoIndex(index + 1);
                   setShowAllPhotos(true);
@@ -83,20 +152,33 @@ const ImageGallery: React.FC = () => {
           ))}
         </div>
 
-        {/* Mobile view - Single image */}
+        {/* Mobile view - Carousel */}
         <div className="md:hidden relative">
-          <img 
-            src={images[currentPhotoIndex].url} 
-            alt={images[currentPhotoIndex].alt}
-            className="w-full h-64 object-cover rounded-xl" 
-          />
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {images.map((image, index) => (
+                <CarouselItem key={image.id}>
+                  <div className="relative h-64 w-full rounded-xl overflow-hidden">
+                    {renderImageOrFallback(image, index, "w-full h-full object-cover")}
+                    {!imagesLoaded[index] && (
+                      <Skeleton className="h-full w-full absolute inset-0" />
+                    )}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2 bg-white/80 hover:bg-white" />
+            <CarouselNext className="right-2 bg-white/80 hover:bg-white" />
+          </Carousel>
+          
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
             <div className="flex gap-1">
               {images.map((_, index) => (
                 <div 
                   key={index} 
-                  className={`h-2 w-2 rounded-full ${currentPhotoIndex === index ? 'bg-white' : 'bg-white/50'}`}
-                  onClick={() => setCurrentPhotoIndex(index)}
+                  className={`h-2 w-2 rounded-full transition-colors duration-300 ${
+                    currentPhotoIndex === index ? 'bg-white' : 'bg-white/50'
+                  }`}
                 />
               ))}
             </div>
@@ -104,20 +186,21 @@ const ImageGallery: React.FC = () => {
         </div>
 
         {/* Show all photos button */}
-        <button 
-          className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hidden md:block"
+        <Button 
+          className="absolute bottom-4 right-4 bg-white hover:bg-white/90 text-black shadow-md hidden md:flex items-center gap-1"
           onClick={() => setShowAllPhotos(true)}
+          variant="outline"
         >
-          Show all photos
-        </button>
+          <span className="text-sm font-medium">Show all photos</span>
+        </Button>
 
         {/* Action buttons */}
         <div className="absolute top-4 right-4 flex gap-2">
-          <Button variant="ghost" className="rounded-full bg-white/90 hover:bg-white p-2">
-            <Share className="h-5 w-5" />
+          <Button variant="outline" className="rounded-full bg-white/90 hover:bg-white shadow-sm p-2 h-9 w-9">
+            <Share className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" className="rounded-full bg-white/90 hover:bg-white p-2">
-            <Heart className="h-5 w-5" />
+          <Button variant="outline" className="rounded-full bg-white/90 hover:bg-white shadow-sm p-2 h-9 w-9">
+            <Heart className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -143,27 +226,34 @@ const ImageGallery: React.FC = () => {
             </div>
             
             <div className="flex-1 flex items-center justify-center p-4 relative">
-              <button 
+              <Button 
                 onClick={prevPhoto} 
-                className="absolute left-8 bg-white rounded-full p-2 shadow-md"
+                className="absolute left-8 bg-white hover:bg-white/90 rounded-full shadow-md z-10"
+                size="icon"
+                variant="outline"
               >
                 <ChevronLeft className="h-5 w-5" />
-              </button>
+              </Button>
               
               <div className="h-full w-full flex items-center justify-center">
-                <img 
-                  src={images[currentPhotoIndex].url} 
-                  alt={images[currentPhotoIndex].alt}
-                  className="max-h-full max-w-full object-contain" 
-                />
+                {renderImageOrFallback(
+                  images[currentPhotoIndex], 
+                  currentPhotoIndex, 
+                  "max-h-full max-w-full object-contain transition-opacity duration-300"
+                )}
+                {!imagesLoaded[currentPhotoIndex] && (
+                  <Skeleton className="w-full h-full max-w-2xl max-h-[70vh]" />
+                )}
               </div>
               
-              <button 
+              <Button 
                 onClick={nextPhoto} 
-                className="absolute right-8 bg-white rounded-full p-2 shadow-md"
+                className="absolute right-8 bg-white hover:bg-white/90 rounded-full shadow-md z-10"
+                size="icon"
+                variant="outline"
               >
                 <ChevronRight className="h-5 w-5" />
-              </button>
+              </Button>
             </div>
             
             <div className="p-4 text-center">

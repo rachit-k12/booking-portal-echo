@@ -4,6 +4,8 @@ import { Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const reviewCategories = [
   { name: "Cleanliness", rating: 4.9 },
@@ -89,6 +91,17 @@ const reviews = [
 
 const Reviews = () => {
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [loadingAvatars, setLoadingAvatars] = useState<{[key: number]: boolean}>(
+    reviews.reduce((acc, review) => ({...acc, [review.id]: true}), {})
+  );
+
+  const handleAvatarLoad = (id: number) => {
+    setLoadingAvatars(prev => ({...prev, [id]: false}));
+  };
+
+  const handleAvatarError = (id: number) => {
+    setLoadingAvatars(prev => ({...prev, [id]: false}));
+  };
 
   return (
     <div className="py-8">
@@ -110,12 +123,25 @@ const Reviews = () => {
         ))}
       </div>
       
-      {/* Reviews Grid */}
+      {/* Reviews Grid with animation */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {reviews.slice(0, 6).map((review) => (
-          <div key={review.id} className="space-y-4">
+          <div key={review.id} className="space-y-4 hover:bg-gray-50 p-3 rounded-lg transition-colors duration-200">
             <div className="flex items-center gap-3">
-              <img src={review.avatar} alt={review.name} className="h-10 w-10 rounded-full" />
+              <div className="relative h-10 w-10">
+                {loadingAvatars[review.id] && (
+                  <Skeleton className="h-10 w-10 rounded-full absolute" />
+                )}
+                <Avatar>
+                  <AvatarImage 
+                    src={review.avatar} 
+                    alt={review.name}
+                    onLoad={() => handleAvatarLoad(review.id)}
+                    onError={() => handleAvatarError(review.id)}
+                  />
+                  <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </div>
               <div>
                 <h4 className="font-medium">{review.name}</h4>
                 <p className="text-sm text-gray-500">{review.date}</p>
@@ -128,7 +154,7 @@ const Reviews = () => {
       
       <button 
         onClick={() => setShowAllReviews(true)} 
-        className="border border-black rounded-lg px-5 py-2 font-medium"
+        className="border border-black rounded-lg px-5 py-2 font-medium transition-colors duration-200 hover:bg-gray-50"
       >
         Show all 63 reviews
       </button>
@@ -162,9 +188,22 @@ const Reviews = () => {
             {/* All Reviews in Dialog */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
               {reviews.map((review) => (
-                <div key={review.id} className="space-y-4">
+                <div key={review.id} className="space-y-4 hover:bg-gray-50 p-3 rounded-lg transition-colors duration-200">
                   <div className="flex items-center gap-3">
-                    <img src={review.avatar} alt={review.name} className="h-10 w-10 rounded-full" />
+                    <div className="relative h-10 w-10">
+                      {loadingAvatars[review.id] && (
+                        <Skeleton className="h-10 w-10 rounded-full absolute" />
+                      )}
+                      <Avatar>
+                        <AvatarImage 
+                          src={review.avatar} 
+                          alt={review.name}
+                          onLoad={() => handleAvatarLoad(review.id)}
+                          onError={() => handleAvatarError(review.id)}
+                        />
+                        <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    </div>
                     <div>
                       <h4 className="font-medium">{review.name}</h4>
                       <p className="text-sm text-gray-500">{review.date}</p>
