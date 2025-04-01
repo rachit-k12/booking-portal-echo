@@ -37,7 +37,7 @@ const Index = () => {
         </div>
         
         {/* Mobile Booking Bar */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex items-center justify-between lg:hidden">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex items-center justify-between lg:hidden z-10">
           <div>
             <span className="text-lg font-semibold">₹4,399</span>
             <span className="text-sm"> night</span>

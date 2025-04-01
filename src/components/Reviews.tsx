@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const reviewCategories = [
   { name: "Cleanliness", rating: 4.9 },
@@ -55,10 +56,40 @@ const reviews = [
     date: "July 2022",
     avatar: "https://i.pravatar.cc/150?img=6",
     content: "Fantastic stay! The apartment is in a great location with easy access to restaurants and shopping. Very comfortable and clean."
+  },
+  {
+    id: 7,
+    name: "Riya",
+    date: "June 2022",
+    avatar: "https://i.pravatar.cc/150?img=7",
+    content: "The host was extremely helpful and the apartment was immaculate. Great amenities and very spacious. Will definitely recommend to friends!"
+  },
+  {
+    id: 8,
+    name: "Thomas",
+    date: "May 2022",
+    avatar: "https://i.pravatar.cc/150?img=8",
+    content: "Everything was just as described. Clean, comfortable and convenient location. The host was very responsive to all our queries."
+  },
+  {
+    id: 9,
+    name: "Aisha",
+    date: "April 2022",
+    avatar: "https://i.pravatar.cc/150?img=9",
+    content: "Had a wonderful time at this apartment. It's well located and has all the amenities you need for a comfortable stay. The host was very friendly and helpful."
+  },
+  {
+    id: 10,
+    name: "John",
+    date: "March 2022",
+    avatar: "https://i.pravatar.cc/150?img=10",
+    content: "Great place, exactly as advertised. Very clean and comfortable with all necessary amenities. Would definitely stay here again!"
   }
 ];
 
 const Reviews = () => {
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
   return (
     <div className="py-8">
       <div className="flex items-center gap-2 mb-6">
@@ -81,7 +112,7 @@ const Reviews = () => {
       
       {/* Reviews Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {reviews.map((review) => (
+        {reviews.slice(0, 6).map((review) => (
           <div key={review.id} className="space-y-4">
             <div className="flex items-center gap-3">
               <img src={review.avatar} alt={review.name} className="h-10 w-10 rounded-full" />
@@ -95,9 +126,57 @@ const Reviews = () => {
         ))}
       </div>
       
-      <button className="border border-black rounded-lg px-5 py-2 font-medium">
+      <button 
+        onClick={() => setShowAllReviews(true)} 
+        className="border border-black rounded-lg px-5 py-2 font-medium"
+      >
         Show all 63 reviews
       </button>
+
+      {/* Reviews Dialog */}
+      <Dialog open={showAllReviews} onOpenChange={setShowAllReviews}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <Star className="h-5 w-5 fill-current" />
+              <span>4.95 · 63 reviews</span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-6">
+            {/* Rating Categories in Dialog */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-4 mb-8">
+              {reviewCategories.map((category) => (
+                <div key={category.name} className="flex items-center justify-between">
+                  <span>{category.name}</span>
+                  <div className="flex items-center gap-3">
+                    <Progress value={category.rating * 20} className="h-1 w-32" />
+                    <span className="text-sm">{category.rating}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <Separator className="my-6" />
+            
+            {/* All Reviews in Dialog */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+              {reviews.map((review) => (
+                <div key={review.id} className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <img src={review.avatar} alt={review.name} className="h-10 w-10 rounded-full" />
+                    <div>
+                      <h4 className="font-medium">{review.name}</h4>
+                      <p className="text-sm text-gray-500">{review.date}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">{review.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
