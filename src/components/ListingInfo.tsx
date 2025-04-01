@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, Medal, Wifi, Tv, Kitchen, Home, Snowflake } from 'lucide-react';
+import { Star, Medal, Wifi, Tv, Home, Snowflake, Utensils } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const ListingInfo = () => {
@@ -98,7 +98,7 @@ const ListingInfo = () => {
             <span>55" HDTV with Netflix</span>
           </div>
           <div className="flex items-center gap-4">
-            <Kitchen className="h-6 w-6" />
+            <Utensils className="h-6 w-6" />
             <span>Fully equipped kitchen</span>
           </div>
           <div className="flex items-center gap-4">
