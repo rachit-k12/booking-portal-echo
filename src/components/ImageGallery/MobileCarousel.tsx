@@ -22,8 +22,8 @@ const MobileCarousel: React.FC<MobileCarouselProps> = ({
   currentPhotoIndex 
 }) => {
   return (
-    <div className="md:hidden relative">
-      <Carousel className="w-full">
+    <div className="md:hidden relative rounded-xl">
+      <Carousel className="w-full rounded-xl">
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={image.id}>
@@ -32,7 +32,7 @@ const MobileCarousel: React.FC<MobileCarouselProps> = ({
                   <img 
                     src={image.url} 
                     alt={image.alt} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-xl"
                     onError={() => console.error(`Failed to load image at index ${index}`)}
                   />
                 ) : (
@@ -53,7 +53,7 @@ const MobileCarousel: React.FC<MobileCarouselProps> = ({
           {images.map((_, index) => (
             <div 
               key={index} 
-              className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
+              className={`h-1.5 w-1.5 rounded-full transition-colors duration-300  ${
                 currentPhotoIndex === index ? 'bg-white' : 'bg-white/40'
               }`}
             />

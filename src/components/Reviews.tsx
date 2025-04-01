@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -161,57 +160,70 @@ const Reviews = () => {
 
       {/* Reviews Dialog */}
       <Dialog open={showAllReviews} onOpenChange={setShowAllReviews}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl flex items-center gap-2">
-              <Star className="h-5 w-5 fill-current" />
-              <span>4.95 · 63 reviews</span>
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="mt-6">
-            {/* Rating Categories in Dialog */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-4 mb-8">
-              {reviewCategories.map((category) => (
-                <div key={category.name} className="flex items-center justify-between">
-                  <span>{category.name}</span>
-                  <div className="flex items-center gap-3">
-                    <Progress value={category.rating * 20} className="h-1 w-32" />
-                    <span className="text-sm">{category.rating}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <DialogContent className="max-w-4xl !p-0 !rounded-xl overflow-hidden">
+          <div className="bg-white">
+            <DialogHeader className="p-6 pb-0">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-xl flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-current" />
+                  <span>4.95 · 63 reviews</span>
+                </DialogTitle>
+                <button 
+                  onClick={() => setShowAllReviews(false)} 
+                  className="rounded-full p-2.5 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            </DialogHeader>
             
-            <Separator className="my-6" />
-            
-            {/* All Reviews in Dialog */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
-              {reviews.map((review) => (
-                <div key={review.id} className="space-y-4 hover:bg-gray-50 p-3 rounded-lg transition-colors duration-200">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-10 w-10">
-                      {loadingAvatars[review.id] && (
-                        <Skeleton className="h-10 w-10 rounded-full absolute" />
-                      )}
-                      <Avatar>
-                        <AvatarImage 
-                          src={review.avatar} 
-                          alt={review.name}
-                          onLoad={() => handleAvatarLoad(review.id)}
-                          onError={() => handleAvatarError(review.id)}
-                        />
-                        <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div>
-                      <h4 className="font-medium">{review.name}</h4>
-                      <p className="text-sm text-gray-500">{review.date}</p>
+            <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+              {/* Rating Categories in Dialog */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-4">
+                {reviewCategories.map((category) => (
+                  <div key={category.name} className="flex items-center justify-between">
+                    <span>{category.name}</span>
+                    <div className="flex items-center gap-3">
+                      <Progress value={category.rating * 20} className="h-1 w-32" />
+                      <span className="text-sm">{category.rating}</span>
                     </div>
                   </div>
-                  <p className="text-gray-700">{review.content}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+              
+              <Separator className="my-6" />
+              
+              {/* All Reviews in Dialog */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+                {reviews.map((review) => (
+                  <div key={review.id} className="space-y-4 hover:bg-gray-50 p-3 rounded-lg transition-colors duration-200">
+                    <div className="flex items-center gap-3">
+                      <div className="relative h-10 w-10">
+                        {loadingAvatars[review.id] && (
+                          <Skeleton className="h-10 w-10 rounded-full absolute" />
+                        )}
+                        <Avatar>
+                          <AvatarImage 
+                            src={review.avatar} 
+                            alt={review.name}
+                            onLoad={() => handleAvatarLoad(review.id)}
+                            onError={() => handleAvatarError(review.id)}
+                          />
+                          <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{review.name}</h4>
+                        <p className="text-sm text-gray-500">{review.date}</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-700">{review.content}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </DialogContent>

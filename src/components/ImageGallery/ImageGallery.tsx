@@ -1,36 +1,60 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ImageGrid from './ImageGrid';
 import MobileCarousel from './MobileCarousel';
 import PhotoModal from './PhotoModal';
-import { Image } from './types';
+import type { Image } from './types';
 
 // Image data
 const images: Image[] = [
   {
     id: 1,
-    url: "https://a0.muscache.com/im/pictures/miso/Hosting-1376711140170106976/original/54cb78c6-fbe9-4772-942a-44495e036331.jpeg",
-    alt: "Living room with modern furnishings"
+    url: "/images/property-image-01.jpeg",
+    alt: "Property Image 1"
   },
   {
     id: 2,
-    url: "https://a0.muscache.com/im/pictures/miso/Hosting-1376711140170106976/original/a85be476-6bc6-4aab-a6c1-5caa377a90a2.jpeg",
-    alt: "Bedroom with comfortable bed"
+    url: "/images/property-image-02.jpeg",
+    alt: "Property Image 2"
   },
   {
     id: 3,
-    url: "https://a0.muscache.com/im/pictures/miso/Hosting-1376711140170106976/original/a4f9d9db-7c01-4a82-af52-e5a64f877756.jpeg",
-    alt: "Modern fully equipped kitchen"
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.37 (2).jpeg",
+    alt: "Property Image 3"
   },
   {
     id: 4,
-    url: "https://a0.muscache.com/im/pictures/miso/Hosting-1376711140170106976/original/bc2e9fa8-1539-4895-a303-7caa56dde205.jpeg",
-    alt: "Clean and spacious bathroom"
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.37 (1).jpeg",
+    alt: "Property Image 4"
   },
   {
     id: 5,
-    url: "https://a0.muscache.com/im/pictures/miso/Hosting-1376711140170106976/original/bb79c5d8-2886-42ed-bcdc-9bbc887bd129.jpeg",
-    alt: "Balcony with outdoor furniture"
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.37.jpeg",
+    alt: "Property Image 5"
+  },
+  {
+    id: 6,
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.36 (2).jpeg",
+    alt: "Property Image 6"
+  },
+  {
+    id: 7,
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.36 (1).jpeg",
+    alt: "Property Image 7"
+  },
+  {
+    id: 8,
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.36.jpeg",
+    alt: "Property Image 8"
+  },
+  {
+    id: 9,
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.35 (2).jpeg",
+    alt: "Property Image 9"
+  },
+  {
+    id: 10,
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.35 (1).jpeg",
+    alt: "Property Image 10"
   }
 ];
 
@@ -39,6 +63,10 @@ const ImageGallery: React.FC = () => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(Array(images.length).fill(false));
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const lastScrollTime = useRef<number>(0);
 
   useEffect(() => {
     // Preload images
@@ -68,6 +96,33 @@ const ImageGallery: React.FC = () => {
     Promise.all(imagePromises).then(() => {
       setAllImagesLoaded(true);
     });
+
+    // Add scroll event listener with delay
+    const handleScroll = () => {
+      const currentTime = Date.now();
+      const position = window.scrollY;
+      
+      // We need to update the position always to track it
+      setScrollPosition(position);
+      
+      // But we don't want to update the "is scrolling" state too often
+      if (currentTime - lastScrollTime.current > 150) {
+        setIsScrolling(true);
+        
+        // Set a timeout to stop the scrolling state after a delay
+        setTimeout(() => {
+          setIsScrolling(false);
+        }, 300);
+        
+        lastScrollTime.current = currentTime;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const nextPhoto = () => {
@@ -83,7 +138,14 @@ const ImageGallery: React.FC = () => {
   };
 
   return (
-    <>
+    <div 
+      ref={galleryRef} 
+      className={`smooth-scroll ${isScrolling ? 'scroll-delayed' : ''}`}
+      style={{ 
+        transition: `transform calc(${isScrolling ? '0.3' : '0.1'}s * var(--scroll-speed, 1)) cubic-bezier(0.33, 1, 0.68, 1)`,
+        transform: `translateY(${isScrolling ? '-8px' : '0px'})`,
+      }}
+    >
       <ImageGrid 
         images={images}
         imagesLoaded={imagesLoaded}
@@ -109,7 +171,7 @@ const ImageGallery: React.FC = () => {
         onNext={nextPhoto}
         onPrevious={prevPhoto}
       />
-    </>
+    </div>
   );
 };
 
