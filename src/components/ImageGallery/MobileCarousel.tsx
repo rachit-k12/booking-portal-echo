@@ -22,12 +22,12 @@ const MobileCarousel: React.FC<MobileCarouselProps> = ({
   currentPhotoIndex 
 }) => {
   return (
-    <div className="md:hidden relative rounded-xl">
+    <div className="lg:hidden relative rounded-xl">
       <Carousel className="w-full rounded-xl">
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={image.id}>
-              <div className="relative h-72 w-full rounded-xl overflow-hidden">
+              <div className="relative h-96 w-full rounded-xl overflow-hidden">
                 {imagesLoaded[index] ? (
                   <img 
                     src={image.url} 
