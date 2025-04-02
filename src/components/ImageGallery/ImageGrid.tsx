@@ -20,11 +20,11 @@ const ImageGrid: React.FC<ImageGridProps> = ({
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   
   return (
-    <div className="relative group">
+    <div className="relative group w-full">
       {/* Desktop Grid */}
-      <div className="hidden md:grid grid-cols-4 gap-2 rounded-2xl overflow-hidden bg-gray-50/50 p-2">
+      <div className="hidden lg:grid grid-cols-4 gap-2 rounded-2xl overflow-hidden bg-gray-50/50 p-2">
         {/* Main Large Image */}
-        <div className="col-span-2 row-span-2 h-[520px] relative overflow-hidden rounded-xl">
+        <div className="col-span-2 row-span-2 relative overflow-hidden rounded-xl">
           <ImageThumbnail 
             image={images[0]}
             index={0}
@@ -33,7 +33,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
             onClick={() => onSelectImage(0)}
             onMouseEnter={() => setHoverIndex(0)}
             onMouseLeave={() => setHoverIndex(null)}
-            className="transform transition-transform duration-700 hover:scale-105"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
@@ -52,7 +52,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({
                 onClick={() => onSelectImage(index)}
                 onMouseEnter={() => setHoverIndex(index)}
                 onMouseLeave={() => setHoverIndex(null)}
-                className="h-[256px] rounded-xl transform transition-transform duration-700 hover:scale-105"
+                className="h-[275px] rounded-xl transform transition-transform duration-700"
               />
             );
           })}
