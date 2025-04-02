@@ -8,17 +8,17 @@ import type { Image } from './types';
 const images: Image[] = [
   {
     id: 1,
-    url: "/images/property-image-01.jpeg",
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.35 (2).jpeg",
     alt: "Property Image 1"
   },
   {
     id: 2,
-    url: "/images/property-image-02.jpeg",
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.35 (1).jpeg",
     alt: "Property Image 2"
   },
   {
     id: 3,
-    url: "/images/WhatsApp Image 2025-03-30 at 21.08.37 (2).jpeg",
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.36 (1).jpeg",
     alt: "Property Image 3"
   },
   {
@@ -38,7 +38,7 @@ const images: Image[] = [
   },
   {
     id: 7,
-    url: "/images/WhatsApp Image 2025-03-30 at 21.08.36 (1).jpeg",
+    url: "/images/WhatsApp Image 2025-03-30 at 21.08.38 (1).jpeg",
     alt: "Property Image 7"
   },
   {
@@ -97,32 +97,6 @@ const ImageGallery: React.FC = () => {
       setAllImagesLoaded(true);
     });
 
-    // Add scroll event listener with delay
-    const handleScroll = () => {
-      const currentTime = Date.now();
-      const position = window.scrollY;
-      
-      // We need to update the position always to track it
-      setScrollPosition(position);
-      
-      // But we don't want to update the "is scrolling" state too often
-      if (currentTime - lastScrollTime.current > 150) {
-        setIsScrolling(true);
-        
-        // Set a timeout to stop the scrolling state after a delay
-        setTimeout(() => {
-          setIsScrolling(false);
-        }, 300);
-        
-        lastScrollTime.current = currentTime;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   const nextPhoto = () => {
